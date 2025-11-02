@@ -1,15 +1,6 @@
-/**
- * Simple Customer Service Chatbot
- * Implements keyword matching and intent recognition
- */
-
 class CustomerServiceChatbot {
     constructor() {
-        this.knowledgeBase = knowledgeBase;
-        this.unrecognizedCount = 0;
-        this.conversationHistory = [];
         this.isOpen = false;
-        
         this.initializeElements();
         this.attachEventListeners();
         this.showWelcomeMessage();
@@ -22,7 +13,6 @@ class CustomerServiceChatbot {
         this.chatMessages = document.getElementById('chat-messages');
         this.chatInput = document.getElementById('chat-input');
         this.chatSend = document.getElementById('chat-send');
-        this.quickActions = document.getElementById('quick-actions');
     }
 
     attachEventListeners() {
@@ -55,11 +45,17 @@ class CustomerServiceChatbot {
         this.chatToggle.classList.remove('hidden');
     }
 
-    showWelcomeMessage() {
-        this.addBotMessage(this.knowledgeBase.welcomeMessage);
+    async showWelcomeMessage() {
+        try {
+            const response = await fetch('/api/welcome');
+            const data = await response.json();
+            this.addBotMessage(data.message);
+        } catch (error) {
+            console.error('Error fetching welcome message:', error);
+        }
     }
 
-    handleSendMessage() {
+    async handleSendMessage() {
         const message = this.chatInput.value.trim();
         if (message === '') return;
 
@@ -67,66 +63,43 @@ class CustomerServiceChatbot {
         this.chatInput.value = '';
         this.showTypingIndicator();
 
-        setTimeout(() => {
-            this.hideTypingIndicator();
-            this.processMessage(message);
-        }, 800);
-    }
+        try {
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: message })
+            });
 
-    handleQuickAction(intentId) {
-        const intent = this.knowledgeBase.intents.find(i => i.id === intentId);
-        if (intent) {
-            this.addUserMessage(intent.name);
-            this.showTypingIndicator();
+            const data = await response.json();
+            
             setTimeout(() => {
                 this.hideTypingIndicator();
-                this.addBotMessage(intent.response);
-                this.unrecognizedCount = 0;
+                this.addBotMessage(data.response);
+            }, 800);
+        } catch (error) {
+            this.hideTypingIndicator();
+            this.addBotMessage('Sorry, there was an error processing your request. Please try again.');
+            console.error('Error:', error);
+        }
+    }
+
+    async handleQuickAction(intentId) {
+        try {
+            const response = await fetch(`/api/quick-action/${intentId}`);
+            const data = await response.json();
+            
+            this.addUserMessage(data.intent_name);
+            this.showTypingIndicator();
+            
+            setTimeout(() => {
+                this.hideTypingIndicator();
+                this.addBotMessage(data.response);
             }, 600);
+        } catch (error) {
+            console.error('Error:', error);
         }
-    }
-
-    processMessage(message) {
-        const normalizedMessage = message.toLowerCase();
-        const matchedIntent = this.matchIntent(normalizedMessage);
-
-        if (matchedIntent) {
-            this.addBotMessage(matchedIntent.response);
-            this.unrecognizedCount = 0;
-        } else {
-            this.unrecognizedCount++;
-            if (this.unrecognizedCount >= this.knowledgeBase.maxUnrecognizedAttempts) {
-                this.addBotMessage(this.knowledgeBase.fallbackMessage);
-                this.unrecognizedCount = 0;
-            } else {
-                this.addBotMessage("I'm not sure I understand. Could you rephrase that or try one of the quick action buttons below?");
-            }
-        }
-
-        this.conversationHistory.push({
-            timestamp: new Date(),
-            user: message,
-            matched: matchedIntent ? matchedIntent.id : null
-        });
-    }
-
-    matchIntent(message) {
-        let bestMatch = null;
-        let highestScore = 0;
-
-        for (const intent of this.knowledgeBase.intents) {
-            let score = 0;
-            for (const keyword of intent.keywords) {
-                if (message.includes(keyword.toLowerCase())) {
-                    score += keyword.length;
-                }
-            }
-            if (score > highestScore) {
-                highestScore = score;
-                bestMatch = intent;
-            }
-        }
-        return highestScore > 0 ? bestMatch : null;
     }
 
     addUserMessage(message) {
@@ -193,22 +166,8 @@ class CustomerServiceChatbot {
     scrollToBottom() {
         this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
     }
-
-    getAnalytics() {
-        const totalMessages = this.conversationHistory.length;
-        const resolvedMessages = this.conversationHistory.filter(m => m.matched !== null).length;
-        const resolutionRate = totalMessages > 0 ? (resolvedMessages / totalMessages * 100).toFixed(2) : 0;
-
-        return {
-            totalMessages,
-            resolvedMessages,
-            resolutionRate: `${resolutionRate}%`,
-            conversationHistory: this.conversationHistory
-        };
-    }
 }
 
-// Initialize chatbot when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     window.chatbot = new CustomerServiceChatbot();
     console.log('Customer Service Chatbot initialized successfully!');

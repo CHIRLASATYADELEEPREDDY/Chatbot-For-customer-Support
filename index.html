@@ -3,48 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Service Chatbot</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Customer Service Chatbot - Python Flask</title>
+    <link rel="stylesheet" href="static/style.css">
 </head>
 <body>
-    <!-- Demo Website Content -->
     <div class="demo-content">
         <header>
-            <h1>Welcome to Our Store</h1>
-            <p>Your one-stop shop for quality products</p>
+            <h1>🛍️ Welcome to Our Store</h1>
+            <p>Your one-stop shop for quality products and exceptional service</p>
         </header>
-        
         <main>
             <section class="hero">
-                <h2>Need Help?</h2>
-                <p>Click the chat icon in the bottom right to get instant answers to your questions!</p>
+                <h2>Need Help? We're Here! 💬</h2>
+                <p>Click the chat icon in the bottom right to get instant answers to your questions. Our AI-powered chatbot is available 24/7 to assist you!</p>
             </section>
-            
             <section class="features">
                 <div class="feature-card">
-                    <h3>Fast Shipping</h3>
-                    <p>Get your orders delivered quickly</p>
+                    <h3>⚡ Fast Shipping</h3>
+                    <p>Get your orders delivered quickly with our express shipping options. Track your package every step of the way!</p>
                 </div>
                 <div class="feature-card">
-                    <h3>Easy Returns</h3>
-                    <p>30-day return policy</p>
+                    <h3>🔄 Easy Returns</h3>
+                    <p>Not satisfied? No problem! Our 30-day return policy makes it easy to return or exchange items.</p>
                 </div>
                 <div class="feature-card">
-                    <h3>24/7 Support</h3>
-                    <p>Our chatbot is always here to help</p>
+                    <h3>🤖 24/7 Support</h3>
+                    <p>Our intelligent chatbot is always here to help with your questions, anytime, anywhere!</p>
                 </div>
             </section>
         </main>
     </div>
-
-    <!-- Chat Widget Toggle Button -->
-    <button id="chat-toggle" class="chat-toggle" aria-label="Open chat">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-        </svg>
-    </button>
-
-    <!-- Chatbot Widget -->
+    <button id="chat-toggle" class="chat-toggle">💬</button>
     <div id="chat-widget" class="chat-widget">
         <div class="chat-header">
             <div class="chat-header-content">
@@ -54,44 +43,22 @@
                     <span class="status">Online</span>
                 </div>
             </div>
-            <button id="chat-close" class="chat-close" aria-label="Close chat">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-            </button>
+            <button id="chat-close" class="chat-close">✕</button>
         </div>
-
-        <div id="chat-messages" class="chat-messages">
-            <!-- Messages will be added here dynamically -->
-        </div>
-
+        <div id="chat-messages" class="chat-messages"></div>
         <div class="chat-input-container">
-            <input 
-                type="text" 
-                id="chat-input" 
-                class="chat-input" 
-                placeholder="Type your question here..."
-                autocomplete="off"
-            >
-            <button id="chat-send" class="chat-send" aria-label="Send message">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="22" y1="2" x2="11" y2="13"></line>
-                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                </svg>
-            </button>
+            <input type="text" id="chat-input" class="chat-input" placeholder="Type your question here..." autocomplete="off">
+            <button id="chat-send" class="chat-send">➤</button>
         </div>
-
-        <!-- Quick Action Buttons -->
         <div id="quick-actions" class="quick-actions">
-            <button class="quick-action-btn" data-intent="shipping">📦 Shipping Status</button>
-            <button class="quick-action-btn" data-intent="return">↩️ Return Policy</button>
-            <button class="quick-action-btn" data-intent="password">🔑 Reset Password</button>
-            <button class="quick-action-btn" data-intent="contact">📞 Contact Us</button>
+            <button class="quick-action-btn" data-intent="order_status">📋 Order Status</button>
+            <button class="quick-action-btn" data-intent="place_order">🛒 Place Order</button>
+            <button class="quick-action-btn" data-intent="cancel_order">❌ Cancel Order</button>
+            <button class="quick-action-btn" data-intent="shipping">📦 Shipping Info</button>
+            <button class="quick-action-btn" data-intent="return">↩️ Returns</button>
+            <button class="quick-action-btn" data-intent="contact">📞 Contact</button>
         </div>
     </div>
-
-    <script src="knowledge-base.js"></script>
-    <script src="chatbot.js"></script>
+    <script src="static/script.js"></script>
 </body>
 </html>

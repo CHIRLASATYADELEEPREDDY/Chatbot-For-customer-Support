@@ -1,6 +1,6 @@
-# 🤖 Simple Customer Service Chatbot
+# 🤖 Customer Service Chatbot - Python Flask
 
-A lightweight, keyword-based customer service chatbot built with vanilla JavaScript. Provides instant responses to common customer inquiries without requiring any backend or AI/ML infrastructure.
+A modern, keyword-based customer service chatbot built with Python Flask. Provides instant responses to common customer inquiries with a beautiful, responsive UI.
 
 ## ✨ Features
 
@@ -10,8 +10,9 @@ A lightweight, keyword-based customer service chatbot built with vanilla JavaScr
 - **Modern UI**: Beautiful, responsive chat widget with smooth animations
 - **Quick Actions**: One-click buttons for popular queries
 - **Fallback Handling**: Graceful escalation to human support when needed
-- **Zero Dependencies**: Pure JavaScript, HTML, and CSS
+- **Flask Backend**: Python-powered REST API
 - **Mobile Responsive**: Works seamlessly on all device sizes
+- **Enhanced CSS**: Modern gradients, animations, and hover effects
 
 ## 📋 Supported Intents
 
@@ -28,47 +29,55 @@ A lightweight, keyword-based customer service chatbot built with vanilla JavaScr
 
 ## 🚀 Quick Start
 
-### Option 1: Direct File Opening
+### Prerequisites
 
-1. Navigate to the project folder:
+- Python 3.7 or higher installed on your system
+
+### Installation & Running
+
+1. **Navigate to the project folder:**
+   ```bash
+   cd C:\Users\satya\OneDrive\Desktop\AMLTA
    ```
-   C:\Users\satya\OneDrive\Desktop\AMLTA
+
+2. **Install Flask:**
+   ```bash
+   pip install Flask
+   ```
+   
+   Or install from requirements.txt:
+   ```bash
+   pip install -r requirements.txt
    ```
 
-2. Double-click `index.html` to open in your default browser
+3. **Run the application:**
+   ```bash
+   python app.py
+   ```
 
-3. Click the chat icon in the bottom-right corner to start chatting!
+4. **Open your browser and visit:**
+   ```
+   http://localhost:5000
+   ```
 
-### Option 2: Local Web Server (Recommended)
+5. **Start chatting!** Click the chat icon in the bottom-right corner.
 
-Using Python:
+### Alternative: Run on different port
 ```bash
-cd C:\Users\satya\OneDrive\Desktop\AMLTA
-python -m http.server 8000
-```
-
-Then open: `http://localhost:8000`
-
-Using Node.js (with npx):
-```bash
-cd C:\Users\satya\OneDrive\Desktop\AMLTA
-npx serve
-```
-
-Using PHP:
-```bash
-cd C:\Users\satya\OneDrive\Desktop\AMLTA
-php -S localhost:8000
+python app.py
+# Then edit app.py to change port number in app.run()
 ```
 
 ## 📁 Project Structure
 
 ```
 AMLTA/
+├── app.py              # Flask backend with API endpoints
 ├── index.html          # Main HTML file with chat widget
-├── styles.css          # All styling and animations
-├── chatbot.js          # Chatbot logic and UI interactions
-├── knowledge-base.js   # Intent definitions and responses
+├── static/
+│   ├── style.css       # Modern CSS with gradients and animations
+│   └── script.js       # Frontend JavaScript for chat interactions
+├── requirements.txt    # Python dependencies
 └── README.md           # This file
 ```
 
@@ -76,27 +85,28 @@ AMLTA/
 
 ### Adding New Intents
 
-Edit `knowledge-base.js` and add a new intent to the `intents` array:
+Edit `app.py` in the `KnowledgeBase` class and add a new intent to the `intents` array:
 
-```javascript
+```python
 {
-    id: "your_intent_id",
-    name: "Intent Display Name",
-    keywords: ["keyword1", "keyword2", "phrase"],
-    response: "Your response text here with **bold** formatting"
+    "id": "your_intent_id",
+    "name": "Intent Display Name",
+    "keywords": ["keyword1", "keyword2", "phrase"],
+    "response": "Your response text here with **bold** formatting"
 }
 ```
 
 ### Modifying Responses
 
-All responses are in `knowledge-base.js`. Simply edit the `response` field for any intent.
+All responses are in `app.py` in the `KnowledgeBase` class. Simply edit the `response` field for any intent.
 
 ### Styling Changes
 
-Edit `styles.css` to customize:
+Edit `static/style.css` to customize:
 - Colors (search for `#667eea` and `#764ba2` for primary gradient)
 - Fonts (change `font-family` in the `body` selector)
 - Sizes (adjust `width` and `height` in `.chat-widget`)
+- Animations (modify `@keyframes` sections)
 
 ### Quick Action Buttons
 
@@ -110,17 +120,18 @@ Edit the quick action buttons in `index.html`:
 
 ## 📊 Analytics
 
-The chatbot tracks conversation metrics. Open the browser console and type:
+The chatbot tracks conversation metrics via API endpoint:
 
-```javascript
-chatbot.getAnalytics()
+```bash
+# Visit in browser or use curl
+http://localhost:5000/api/analytics
 ```
 
 This returns:
 - Total messages sent
 - Successfully resolved messages
 - Resolution rate percentage
-- Full conversation history
+- Full conversation history with timestamps
 
 ## 🎯 Key Performance Indicators (KPIs)
 
@@ -136,56 +147,82 @@ As per the PRD, the chatbot targets:
 
 ### Fallback Settings
 
-In `knowledge-base.js`, adjust:
+In `app.py`, adjust the `KnowledgeBase` class:
 
-```javascript
-maxUnrecognizedAttempts: 2  // Number of failed attempts before fallback
-fallbackMessage: "Your custom fallback message"
+```python
+self.max_unrecognized_attempts = 2  # Number of failed attempts before fallback
+self.fallback_message = "Your custom fallback message"
 ```
 
 ### Contact Information
 
-Update all contact details in the `knowledge-base.js` responses:
+Update all contact details in the `app.py` intent responses:
 - Email addresses
 - Phone numbers
 - Business hours
 - Mailing addresses
 
+### Server Configuration
+
+In `app.py`, modify the server settings:
+
+```python
+app.run(debug=True, host='0.0.0.0', port=5000)
+# Change port or host as needed
+```
+
 ## 🌐 Deployment
 
-### Deploy to Web Hosting
+### Deploy to Production
 
-1. Upload all files to your web server
-2. Ensure files maintain the same directory structure
-3. Update contact information in `knowledge-base.js`
-4. Test the chatbot on your live site
+1. **Set up Python environment on your server**
+2. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. **Use a production WSGI server (e.g., Gunicorn):**
+   ```bash
+   pip install gunicorn
+   gunicorn -w 4 -b 0.0.0.0:5000 app:app
+   ```
+4. **Set up reverse proxy (Nginx/Apache)**
+5. **Update contact information in `app.py`**
 
-### Embed in Existing Website
+### Deploy to Cloud Platforms
 
-Copy the chat widget code from `index.html` (lines with `chat-widget` and `chat-toggle`) and paste into your website's HTML. Include the CSS and JS files:
-
-```html
-<link rel="stylesheet" href="path/to/styles.css">
-<script src="path/to/knowledge-base.js"></script>
-<script src="path/to/chatbot.js"></script>
+**Heroku:**
+```bash
+# Create Procfile
+echo "web: gunicorn app:app" > Procfile
+git push heroku main
 ```
+
+**PythonAnywhere / AWS / Azure:**
+Follow platform-specific Flask deployment guides
 
 ## 🐛 Troubleshooting
 
+**Flask server won't start:**
+- Ensure Flask is installed: `pip install Flask`
+- Check if port 5000 is already in use
+- Verify Python version is 3.7+
+
 **Chat widget doesn't appear:**
 - Check browser console for errors
-- Ensure all three files (HTML, CSS, JS) are in the same directory
-- Verify JavaScript is enabled in your browser
+- Ensure Flask server is running
+- Verify static files are in the `static/` folder
+- Check browser DevTools Network tab for 404 errors
 
 **Intents not matching:**
-- Check keyword spelling in `knowledge-base.js`
+- Check keyword spelling in `app.py`
 - Keywords are case-insensitive
 - Add more keyword variations for better matching
+- Test the `/api/chat` endpoint directly
 
-**Styling issues:**
-- Clear browser cache
-- Check that `styles.css` is loading (Network tab in DevTools)
-- Verify no CSS conflicts with existing site styles
+**API errors:**
+- Check Flask console for error messages
+- Verify JSON format in POST requests
+- Ensure CORS is configured if accessing from different domain
 
 ## 📝 Future Enhancements
 
@@ -210,12 +247,21 @@ For questions or issues:
 
 ## 🎓 Technical Details
 
-- **No external dependencies**: Pure vanilla JavaScript
+- **Backend**: Python 3.7+ with Flask framework
+- **Frontend**: Vanilla JavaScript (no frameworks)
+- **Styling**: Modern CSS3 with gradients and animations
 - **Browser compatibility**: Modern browsers (Chrome, Firefox, Safari, Edge)
-- **File size**: ~25KB total (uncompressed)
-- **Performance**: Instant keyword matching, no API calls
-- **Accessibility**: Keyboard navigation supported, ARIA labels included
+- **Performance**: Sub-second response time, REST API architecture
+- **Accessibility**: Keyboard navigation supported, semantic HTML
+
+## 📦 API Endpoints
+
+- `GET /` - Main application page
+- `GET /api/welcome` - Get welcome message
+- `POST /api/chat` - Send message and get response
+- `GET /api/quick-action/<intent_id>` - Get quick action response
+- `GET /api/analytics` - Get conversation analytics
 
 ---
 
-**Built with ❤️ for excellent customer service**
+**Built with ❤️ using Python Flask for excellent customer service**
